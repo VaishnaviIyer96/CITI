@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html >
+<head>
+  <meta charset="UTF-8">
+  <title>Login Page</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
+
+  <link rel='stylesheet prefetch' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css'>
+    
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+<!-- jQuery library -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+<!-- Latest compiled JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+  
+  
+</head>
+
+<body>
+    
+    <style>
+        
+    body{
+	margin: 0;
+	padding: 300px 300px;
+	background: #DCD7D6;
+/*    background-image:url(https://images.pexels.com/photos/135018/pexels-photo-135018.jpeg?w=940&h=650&auto=compress&cs=tinysrgb) ;*/
+        background-image: url(http://www.sportskenovosti.net/wp-content/uploads/2016/08/h2h.jpg);
+	background-size:cover;
+	background-attachment:fixed;
+	color:white;
+    font-family: Montserrat-Light;
+    font-size: 18px;
+    
+}
+    @font-face{
+    font-family: Montserrat-Light;
+    src: url(Montserrat-Light.otf)
+        
+    
+ 
+/*
+}
+        .container
+        {
+            border: 2px solid black;
+            width : 500px;
+             padding-right: 30px 50px 60px 70px;
+            background-color: darkcyan;
+            opacity: 0.7;
+        }
+*/
+
+    </style>
+
+    
+    
+    <div class="container" ng-app="myApp">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header">
+        <h1>Login</h1>
+      </div>
+    </div>
+    
+    <div ui-view></div>
+    
+  </div>
+  
+  <script type="text/ng-template" id="login.html">
+    <div class="col-md-12">
+      
+      <form ng-submit="formSubmit()" class="form">
+        <div class="col-md-4">
+          <div class="form-group">
+           USERNAME:<input type="text" class="form-control" ng-model="username" placeholder="Enter Username" required/>
+          </div> 
+
+          <div class="form-group">
+            PASSWORD:<input type="password" class="form-control" ng-model="password" placeholder="Enter Password" required/>
+          </div>
+
+          <div class="form-group">
+            <button type="submit" class="btn btn-success" onclick="validate()">Login</button>
+            <span class="text-danger">{{ error }}</span>
+          </div>
+
+        </div>
+      </form>
+    </div>
+  </script>
+  
+  <script type="text/ng-template" id="home.html">
+    <div class="col-md-12">
+      <h3>Home Page</h3>
+        
+<!--
+      <h2>Striped Table</h2>
+<p>For zebra-striped tables, use the nth-child() selector and add a background-color to all even (or odd) table rows:</p>
+
+<table>
+  <tr>
+    <th>First Name</th>
+    <th>Last Name</th>
+    <th>Points</th>
+  </tr>
+  <tr>
+    <td>Peter</td>
+    <td>Griffin</td>
+    <td>$100</td>
+  </tr>
+  <tr>
+    <td>Lois</td>
+    <td>Griffin</td>
+    <td>$150</td>
+  </tr>
+  <tr>
+    <td>Joe</td>
+    <td>Swanson</td>
+    <td>$300</td>
+  </tr>
+  <tr>
+    <td>Cleveland</td>
+    <td>Brown</td>
+    <td>$250</td>
+  </tr>
+
+</table>
+-->    
+      <a ui-sref="login" >Back</a>
+    </div>
+  </script>
+</div>
+  <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+<script src='http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js'></script>
+<script src='http://cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.14/angular.min.js'></script>
+<script src='http://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.18/angular-ui-router.js'></script>
+
+    <script>
+    (function() {
+  var app = angular.module('myApp', ['ui.router']);
+  
+  app.run(function($rootScope, $location, $state, LoginService) {
+    $rootScope.$on('$stateChangeStart', 
+      function(event, toState, toParams, fromState, fromParams){ 
+          console.log('Changed state to: ' + toState);
+      });
+    
+      if(!LoginService.isAuthenticated()) {
+        $state.transitionTo('login');
+      }
+  });
+  
+  app.config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {
+    $urlRouterProvider.otherwise('/home');
+    
+    $stateProvider
+      .state('login', {
+        url : '/login',
+        templateUrl : 'login.html',
+        controller : 'LoginController'
+      })
+      .state('home', {
+        url : '/home',
+        templateUrl : 'home.html',
+        controller : 'HomeController'
+      });
+  }]);
+
+  app.controller('LoginController', function($scope, $rootScope, $stateParams, $state, LoginService) {
+    $rootScope.title = "AngularJS Login Sample";
+    
+    $scope.formSubmit = function() {
+      if(LoginService.login($scope.username, $scope.password)) {
+        $scope.error = '';
+        $scope.username = '';
+        $scope.password = '';
+        $state.transitionTo('home');
+      } else {
+        $scope.error = "Incorrect username/password !";
+      }   
+    };
+    
+  });
+  
+  app.controller('HomeController', function($scope, $rootScope, $stateParams, $state, LoginService) {
+    $rootScope.title = "AngularJS Login Sample";
+    
+  });
+  
+  app.factory('LoginService', function() {
+    var admin = 'user1';
+    var pass = 'user1';
+    var isAuthenticated = false;
+    
+    return {
+      login : function(username, password) {
+        isAuthenticated = username === admin && password === pass;
+        return isAuthenticated;
+      },
+      isAuthenticated : function() {
+        return isAuthenticated;
+      }
+    };
+    
+  });
+  
+})();
+    </script>
+
+</body>
+</html>
+
+
